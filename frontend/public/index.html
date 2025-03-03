@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JD Luxury Watches</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- <script type="module" src="/src/main.tsx"></script> -->
+
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">JD Luxury Watches</div>
+        <div class="nav-links-container">
+            <div class="nav-links">
+                <a href="#" class="active">Home</a>
+                <a href="#">Collections</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="auth-buttons">
+                <button class="icon-btn" onclick="goToWishlist()"><i class="fas fa-heart"></i></button>
+                <button class="icon-btn" onclick="goToCart()"><i class="fas fa-shopping-cart"></i></button>
+                <button class="icon-btn"><i class="fas fa-user"></i></button>
+                <div id="auth-buttons-container">
+                    <button class="login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                    <button class="signup-btn" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</button>
+                </div>
+                
+                <div id="auth-buttons-container"></div>  
+            </div>
+        </div>
+    </nav>
+    <!-- Signup Modal -->
+    <div class="modal fade" id="signupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content p-3">
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">Signup</h5>
+                <form id="signupForm">
+                    <div class="mb-3">
+                        <label>Name</label>
+                        <input type="text" class="form-control" id="signupName" required>
+                        <small></small> <!-- Error message will appear here -->
+                    </div>
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="signupEmail" required>
+                        <small></small> <!-- Error message will appear here -->
+                    </div>
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" class="form-control" id="signupPassword" required>
+                        <small></small> <!-- Error message will appear here -->
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">Submit</button>
+                    <!-- Response message inside modal -->
+                    <p id="responseMessage" class="mt-2 text-center"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- login modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content p-3">
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">Login</h5>
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="loginEmail" required>
+                        <small></small> <!-- Error message will appear here -->
+                    </div>
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" class="form-control" id="loginPassword" required>
+                        <small></small> <!-- Error message will appear here -->
+                    </div>
+                    <!-- <a href="#" class="text-muted">Forgot Password?</a> -->
+                    <button type="submit" class="btn btn-warning w-100">Submit</button>
+                    <!-- Response message inside modal -->
+                    <p id="responseMessage" class="mt-2 text-center"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-container">
+        <button id="filterBtn" class="filter-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="21" y1="4" x2="3" y2="4"/>
+                <line x1="17" y1="12" x2="7" y2="12"/>
+                <line x1="13" y1="20" x2="11" y2="20"/>
+            </svg>
+            Filter
+        </button>
+    </div>
+
+    <header class="hero">
+        <h1>Luxury Timepieces</h1>
+        <p>Discover our collection of premium watches</p>
+    </header>
+
+    <section class="categories">
+        <h2>Categories</h2>
+        <div class="category-grid">
+            <div class="category">
+                <img src="https://cdn2.ethoswatches.com/rolex/pub/media/newtheme//keep-exploring/desktop/rolex-keep-exploring-new-watches-2024-gmt-master-II-m126710grnr-0003_2401jva_002_rvb.jpg" alt="Luxury Watch">
+                <h3>Luxury</h3>
+            </div>
+            <div class="category">
+                <img src="https://www.datocms-assets.com/99008/1723061220-bugatti-tourbillon.webp?auto=compress%2Cformat&dpr=2&w=1519" alt="Sport Watch">
+                <h3>Sport</h3>
+            </div>
+            <div class="category">
+                <img src="https://media.rolex.com/image/upload/q_auto:eco/f_auto/c_limit,w_1920/v1/rolexcom/returning-visitor/family/day-date">
+                <h3>Classic</h3>
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="products">
+        <h2>Featured Products</h2>
+        <div id="product-list" class="product-list "></div>
+    </section>
+
+    <!-- Product Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body d-flex">
+                    <!-- Left side: Product image -->
+                    <img id="modalImage" src="" alt="Product Image" class="modal-img" data-id="" style="max-width: 50%;">
+    
+                    <!-- Right side: Product details -->
+                    <div class="modal-details" style="padding-left: 20px;">
+                        <h5 class="modal-title" id="modalTitle">Product Name</h5>
+    
+                        <!-- Dynamic product options -->
+                        <div id="modalDetails"></div>
+    
+                        <!-- Price -->
+                        <p id="modalPrice" class="mt-3"><strong>Price: </strong></p>
+    
+                        <!-- Description -->
+                        <p id="modalDescription"></p>
+    
+                        <!-- Action buttons -->
+                        <button id="modalAddToCart" class="btn btn-primary">Add to Cart</button>
+                        <button class="btn btn-success">Buy Now</button>
+                        <button id="modalAddToWishlist" class="btn btn-warning">Add to Wishlist</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic options styling -->
+    <style>
+        .option-box {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .option-box.selected {
+            border: 2px solid #007bff;
+            background-color: #e7f1ff;
+        }
+    </style>
+    
+    <!-- The layout is ready — now we just need to fill options dynamically through JS! -->
+    
+    
+    <!-- Aapko agar thoda CSS styling chahiye ho to bata dena! -->
+    
+
+    <div id="notification-toast" class="toast">
+        <span id="toast-message"></span>
+    </div>
+    
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>JD Luxury Watches brings you the finest timepieces from around the world. We pride ourselves on authenticity and exceptional service.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: info@jdwatches.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+                <p>Address: 123 Luxury Lane, New York, NY 10001</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 JD Luxury Watches. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        async function handleSignup(event) {
+            event.preventDefault(); 
+
+            const name = document.getElementById("signupName").value;
+            const email = document.getElementById("signupEmail").value;
+            const password = document.getElementById("signupPassword").value;
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/user/register_user", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json(); // Convert response to JSON
+                document.getElementById("responseMessage").textContent = "Signup: " + (data.message || "Success");
+
+                setTimeout(() => {
+                    const signupModal = bootstrap.Modal.getInstance(document.getElementById("signupModal"));
+                    if (signupModal) {
+                        signupModal.hide();
+                    }
+                }, 1000);
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
+        document.getElementById("signupForm").addEventListener("submit", handleSignup);
+
+
+        document.getElementById("loginForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+
+        const raw = JSON.stringify({
+            "email": email,
+            "password": password
+        });
+
+        let response=await fetch("http://127.0.0.1:8000/user/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: raw
+        })
+
+        let  result = await response.json()
+        
+        if (response.ok && result.access_token) {
+            document.cookie = `authToken=${result.access_token}; path=/; max-age=86400;`;
+            bootstrap.Modal.getInstance(document.getElementById("loginModal")).hide();
+            document.getElementById("loginForm").reset();
+            checkAuth();
+
+          } else {
+            document.getElementById("message").innerHTML = `<div class='alert alert-danger'>Error: ${
+              result.message || "Invalid credentials"
+            }</div>`;
+        }
+    });
+
+    function checkAuth() {
+        let cookies = document.cookie.split("; ");   
+        let isAuthenticated = cookies.some(cookie => cookie.startsWith("authToken="));
+
+        let authContainer = document.getElementById("auth-buttons-container");
+
+        if (authContainer) {
+            authContainer.innerHTML = isAuthenticated 
+                ? `<button class="logout-btn" onclick="logout()">Logout</button>` 
+                : `<button class="login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                <button class="signup-btn" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</button>`;
+        }
+    }
+
+    function logout() {
+        document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        checkAuth(); 
+    }
+
+    document.addEventListener("DOMContentLoaded", checkAuth);
+
+    function getAuthToken() {
+        const cookies = document.cookie.split("; ");
+        const tokenCookie = cookies.find(cookie => cookie.startsWith("authToken="));
+        return tokenCookie ? tokenCookie.split("=")[1].trim() : null;
+    }
+
+
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    // const productList = document.getElementById("product-list");
+    // const modalTitle = document.getElementById("modalTitle");
+    // const modalImage = document.getElementById("modalImage");
+    // const modalPrice = document.getElementById("modalPrice");
+    // const modalDescription = document.getElementById("modalDescription");
+    // const productModal = new bootstrap.Modal(document.getElementById("productModal"));
+
+    // // Fetch all products
+    // async function fetchProducts() {
+    //     try {
+    //         const response = await fetch("http://127.0.0.1:8000/product/products");
+    //         const products = await response.json();
+    //         console.log(products)
+    //         productList.innerHTML = "";
+
+    //         products?.product_id?.forEach(product => {
+    //             const productCard = document.createElement("div");
+    //             productCard.classList.add("product-card");
+    //             productCard.innerHTML = `
+    //                 <img src="${product.image_path}" 
+    //                 alt="${product.name}" 
+    //                 class="product-img" 
+    //                 data-id="${product.id}">
+    //                 <h3>${product.name}</h3> 
+    //                 <p>Price:$${product.price}</p>
+    //             `;
+    //             productList.appendChild(productCard);
+    //         });
+
+    //         attachClickEvent();
+    //     } catch (error) {
+    //         console.error("Error fetching products:", error);
+    //     }
+    // }
+
+    // // Attach event listener to images
+    // function attachClickEvent() {
+    //     document.querySelectorAll(".product-img").forEach(img => {
+    //         img.addEventListener("click", async function () {
+    //             const productId = this.getAttribute("data-id");
+    //             await fetchProductDetails(productId);
+    //         });
+    //     });
+    // }
+
+    // // Fetch product details and open modal
+    // async function fetchProductDetails(productId) {
+    //     try {
+    //         const response = await fetch(`http://127.0.0.1:8000/product/products/${productId}`);
+    //         if (!response.ok) {
+    //             throw new Error("Product not found");
+    //         }
+    //         const product_response = await response.json();
+    //         const product = product_response?.product
+    //         console.log(product)
+    //         modalTitle.textContent = product.name;
+    //         modalImage.src = product.image_path;
+    //         modalImage.setAttribute("data-id", product.id);
+    //         modalPrice.textContent = `Price: $${product.price}`;
+    //         modalDescription.textContent = product.details;
+
+    //         productModal.show();
+    //     } catch (error) {
+    //         console.error("Error fetching product details:", error);
+    //     }
+    // }
+
+    // fetchProducts();
+    // });
+
+    // modified
+    document.addEventListener("DOMContentLoaded", function () {
+        const productList = document.getElementById("product-list");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalImage = document.getElementById("modalImage");
+        const modalDetails = document.getElementById("modalDetails");
+        const modalPrice = document.getElementById("modalPrice");
+        const modalDescription = document.getElementById("modalDescription");
+        const productModal = new bootstrap.Modal(document.getElementById("productModal"));
+
+        // 🟢 Function to fetch all products
+        async function fetchProducts() {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/product/products");
+                const products = await response.json();
+
+                if (Array.isArray(products?.product_id)) {
+                    const allProducts = products.product_id;
+
+                    // 🔥 Shuffle array and pick 4 random products
+                    const randomProducts = allProducts
+                        .sort(() => 0.5 - Math.random()) // Shuffle the array
+                        .slice(0, 6); 
+
+                    productList.innerHTML = "";
+
+                    randomProducts.forEach(product => {
+                        const productCard = document.createElement("div");
+                        productCard.classList.add("product-card");
+                        productCard.innerHTML = `
+                            <img src="${product.image_path}" 
+                            alt="${product.name}" 
+                            class="product-img" 
+                            data-id="${product.id}">
+                            <h3>${product.name}</h3> 
+                            <p>Price: $${product.price}</p>
+                        `;
+                        productList.appendChild(productCard);
+                    });
+
+                    attachClickEvent();
+                } else {
+                    console.error("No products found or invalid response:", products);
+                }
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        }
+
+
+        // 🟢 Attach click event to open modal
+        function attachClickEvent() {
+            document.querySelectorAll(".product-img").forEach(img => {
+                img.addEventListener("click", async function () {
+                    const productId = this.getAttribute("data-id");
+                    await fetchProductDetails(productId);
+                });
+            });
+        }
+
+        // 🟢 Fetch product details and populate the modal
+        async function fetchProductDetails(productId) {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/product/products/${productId}`);
+                
+                if (!response.ok) {
+                    throw new Error("Product not found");
+                }
+
+                const product_response = await response.json();
+                const product = product_response?.product;
+
+                console.log("Fetched Product:", product);
+
+                modalTitle.textContent = product.name || "Product Name";
+                modalImage.src = product.image_path || "";
+                modalImage.setAttribute("data-id", product.id);
+                modalPrice.innerHTML = `<strong>Price: $${product.price || 0}</strong>`;
+                modalDescription.innerHTML = product.details || "No description available.";
+
+                // 🟡 Render attributes dynamically
+                modalDetails.innerHTML = "";
+                const attributeKeys = Object.keys(product).filter(key => Array.isArray(product[key]));
+
+                attributeKeys.forEach(attr => {
+                    const optionsHtml = product[attr].map(a => `
+                        <div class="option-box" onclick="selectOption(this)">
+                            ${a.value}
+                        </div>
+                    `).join(" ");
+
+                    modalDetails.innerHTML += `
+                        <h5>${attr.replace(/_/g, " ")}</h5>
+                        <div class="options-container">${optionsHtml}</div>
+                    `;
+                });
+
+                productModal.show();
+            } catch (error) {
+                console.error("Error fetching product details:", error);
+            }
+        }
+
+        // 🟢 Option selection logic
+        window.selectOption = function (element) {
+            const allOptions = element.parentElement.querySelectorAll('.option-box');
+            allOptions.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        // 🟢 Fetch products on load
+        fetchProducts();
+    });
+
+
+    // document.getElementById("modalAddToCart").addEventListener("click", async function () {
+    //     try {
+    //         const productId = document.getElementById("modalImage").getAttribute("data-id");
+    //         const productName = document.getElementById("modalTitle").textContent;
+    //         const productPrice = document.getElementById("modalPrice").textContent.replace("Price: $", "");
+    //         const imagePath = document.getElementById("modalImage").getAttribute("src");
+             
+    //         console.log("Product ID:", productId);
+    //         console.log("Image Path:", imagePath);
+
+    //         if (!productId) throw new Error("Product ID is missing.");
+
+    //         const token = getAuthToken();
+    //          if (token) {
+    //             const response = await fetch("http://127.0.0.1:8000/cart/create/", {
+    //                 method: "POST",
+    //                 headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}`},
+    //                 body: JSON.stringify({ product_id: productId, quantity: 1 })
+    //             });
+
+    //             if (!response.ok) throw new Error(`Failed to add to cart. Status: ${response.status}`);
+
+    //             const result = await response.json();
+    //             console.log("Added to cart:", result);
+    //          }
+    //          else {
+    //             addToLocalCart(productId, productName, productPrice, imagePath);
+    //          }
+    //     } catch (error) {
+    //         console.error("Error:", error.message);
+    //     }
+    // });
+
+    // function addToLocalCart(productId, productName, productPrice, imagePath) {
+    //     const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    //     const existingItem = cart.find(item => item.product_id === productId);
+
+    //     if (existingItem) {
+    //         existingItem.quantity += 1;
+    //     } else {
+    //         cart.push({
+    //             product_id: productId,
+    //             product_name: productName,
+    //             product_price: parseFloat(productPrice),
+    //             quantity: 1,
+    //             image_path: imagePath
+    //         });
+    //     }
+
+    //     localStorage.setItem('cart', JSON.stringify(cart));
+    //     console.log("Added to cart (localStorage):", cart);
+    // }
+
+    document.getElementById("modalAddToCart").addEventListener("click", async function () {
+        try {
+            const productId = document.getElementById("modalImage").getAttribute("data-id");
+            const productName = document.getElementById("modalTitle").textContent;
+            const productPrice = document.getElementById("modalPrice").textContent.replace("Price: $", "");
+            const imagePath = document.getElementById("modalImage").getAttribute("src");
+            
+            const caseMaterial = getSelectedOption("Case Material");
+            const strapType = getSelectedOption("Strap Type");
+            const dialColor = getSelectedOption("Dial Color");
+
+            if (!productId) throw new Error("Product ID is missing.");
+
+            const token = getAuthToken();
+            if (token) {
+                await syncLocalCartToServer(token);
+                alert("Cart synced to server!");
+            } else {
+                addToLocalCart(productId, productName, productPrice, imagePath, caseMaterial, strapType, dialColor);
+            }
+        } catch (error) {
+            console.error("Error:", error.message);
+        }
+    });
+
+    const apiUrl = "http://127.0.0.1:8000/cart";
+
+    function getLocalCart() {
+        return JSON.parse(localStorage.getItem('cart')) || [];
+    }
+
+    function saveLocalCart(cart) {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    async function syncLocalCartToServer(token) {
+        const localCart = getLocalCart();
+        if (localCart.length === 0) return;
+
+        try {
+            for (const item of localCart) {
+                const response = await fetch(`${apiUrl}/create/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({
+                        product_id: item.productId || item.product_id,  
+                        product_name: item.productName || item.product_name,
+                        product_price: parseFloat(item.productPrice || item.product_price),  
+                        image_path: item.imagePath || item.image_path,
+                        case_material: item.caseMaterial || item.case_material,
+                        strap_type: item.strapType || item.strap_type,
+                        dial_color: item.dialColor || item.dial_color,
+                        quantity: item.quantity || 1
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("Failed to add item to server cart:", errorData);
+                }
+            }
+            console.log("Local cart synced to server!");
+            localStorage.removeItem('cart');
+        } catch (error) {
+            console.error("Failed to sync local cart to server:", error);
+        }
+    }
+
+
+    async function handleLogin() {
+        const token = getAuthToken();
+        if (token) {
+            await syncLocalCartToServer(token); 
+            fetchCart(); // Refresh the cart from the server
+            window.location.href = "cart.html"; // Redirect to cart page
+        } else {
+            alert("Login failed or token missing");
+        }
+    }
+
+    window.onload = () => {
+        const token = getAuthToken();
+        if (token) {
+            syncLocalCartToServer(token);
+        }
+    };
+
+    console.log("Cart sync script loaded!");
+
+    function addToLocalCart(productId, productName, productPrice, imagePath, caseMaterial, strapType, dialColor) {
+        const cartItem = { productId, productName, productPrice, imagePath, caseMaterial, strapType, dialColor, quantity: 1 };
+        
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const existingItem = cart.find(item => 
+            item.productId === productId && 
+            item.caseMaterial === caseMaterial && 
+            item.strapType === strapType && 
+            item.dialColor === dialColor
+        );
+
+        if (existingItem) {
+            alert("Product already in cart!");
+        } else {
+            cart.push(cartItem);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert("Product added to cart locally!");
+        }
+    }
+
+    function getSelectedOption(attributeName) {
+        const headings = document.querySelectorAll("h5");
+        for (const heading of headings) {
+            if (heading.textContent.trim() === attributeName) {
+                const optionsContainer = heading.nextElementSibling;
+                const selectedOption = optionsContainer.querySelector('.option-box.selected');
+                return selectedOption ? selectedOption.innerText : null;
+            }
+        }
+        return null;
+    }
+
+
+
+// Now, the flow is complete: Local cart syncs, clears, and prevents duplicates! Let me know if anything else needs polishing. 🚀
+
+
+    function goToCart() {
+        window.location.href = "cart.html";
+    }
+
+    // Add to Wishlist button event listener
+    document.getElementById("modalAddToWishlist").addEventListener("click", async function () {
+        try {
+            const productId = document.getElementById("modalImage").getAttribute("data-id");
+
+            if (!productId) throw new Error("Product ID is missing.");
+
+            const token = getAuthToken();
+            if (token) {
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append("Authorization", `Bearer ${token}`);
+
+                const raw = JSON.stringify({ product_id: productId, isFavourite: true });
+
+                const requestOptions = {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: "follow"
+                };
+
+                const response = await fetch("http://127.0.0.1:8000/wishlist/create", requestOptions);
+                
+                if (!response.ok) throw new Error(`Failed to add to wishlist. Status: ${response.status}`);
+
+                const result = await response.json();
+                console.log("Added to wishlist:", result);
+                showModal("Product added to your wishlist!");
+            } else {
+                showModal("Please log in to use the wishlist feature.");
+            }
+        } catch (error) {
+            console.error("Error adding to wishlist:", error.message);
+        }
+    });
+
+    // Fetch all wishlist products
+    async function fetchWishlist() {
+        try {
+            const token = getAuthToken();
+            if (token) {
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append("Authorization", `Bearer ${token}`);
+
+                const requestOptions = {
+                    method: "GET",
+                    headers: myHeaders,
+                    redirect: "follow"
+                };
+
+                const response = await fetch("http://127.0.0.1:8000/wishlist/allProduct", requestOptions);
+
+                if (!response.ok) throw new Error(`Failed to fetch wishlist. Status: ${response.status}`);
+
+                const result = await response.json();
+                console.log("Wishlist items:", result);
+                return result;
+            } else {
+                showModal("Please log in to view your wishlist.");
+            }
+        } catch (error) {
+            console.error("Error fetching wishlist:", error.message);
+        }
+    }
+
+    function showModal(message) {
+        const toast = document.getElementById("notification-toast");
+        const toastMessage = document.getElementById("toast-message");
+
+        toastMessage.textContent = message;
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3000); // Hide after 3 seconds
+    }
+
+    function goToWishlist() {
+        window.location.href = "wishlist.html";
+    }
+
+
+    </script>
+
+</body>
+</html>

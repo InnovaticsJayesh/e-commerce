@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 20px;
+            color: #333;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        
+        .cart-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .cart-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .cart-total {
+            text-align: right;
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            font-size: 1.2em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Shopping Cart</h1>
+    <div class="cart-container">
+        <div id="cart-items"></div>
+        <h2 id="cart-total" class="cart-total">Total: $0</h2>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="goBackToProducts()">Back to Products</button>
+    </div>
+
+    <script>
+        const apiUrl = "http://127.0.0.1:8000/cart";
+        
+        function getAuthToken() {
+            const cookie = document.cookie.split('; ').find(row => row.startsWith('authToken='));
+            return cookie ? cookie.split('=')[1] : null;
+        }
+
+        async function fetchCart() {
+            const token = getAuthToken();
+            if (token) {
+                await syncLocalCartToServer(token);
+                const dbCart = await fetchCartFromDB(token);
+                localStorage.removeItem('cart');
+                renderCart(dbCart);
+            } else {
+                renderCart(getLocalCart());
+            }
+        }
+
+        async function fetchCartFromDB(token) {
+            try {
+                const response = await fetch(`${apiUrl}/read/`, {
+                    method: 'GET',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const result = await response.json();
+                console.log("API Response:", result);
+                return result.cart?.data || [];
+            } catch (error) {
+                console.error('Failed to fetch cart from DB:', error);
+                return [];
+            }
+        }
+
+        function getLocalCart() {
+            return JSON.parse(localStorage.getItem('cart')) || [];
+        }
+
+        function saveLocalCart(cart) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        async function syncLocalCartToServer(token) {
+            const localCart = getLocalCart();
+            if (localCart.length === 0) return;
+
+            try {
+                for (const item of localCart) {
+                    await fetch(`${apiUrl}/create/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify(item)
+                    });
+                }
+                console.log("Local cart synced to server!");
+            } catch (error) {
+                console.error("Failed to sync local cart to server:", error);
+            }
+        }
+
+        function renderCart(cart) {
+            const cartContainer = document.getElementById("cart-items");
+            const totalElement = document.getElementById("cart-total");
+            cartContainer.innerHTML = "";
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = "<p class='empty-cart'>Your cart is empty.</p>";
+                totalElement.textContent = "Total: $0";
+                return;
+            }
+
+            cart.forEach(item => {
+                const price = parseFloat(item.product_price || item.productPrice || 0);
+                const itemTotal = price * item.quantity;
+                total += itemTotal;
+
+                cartContainer.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.imagePath || item.image_path}" alt="${item.productName || item.product_name}" class="cart-img">
+                        <h3>${item.productName || item.product_name}</h3>
+                        <p>Price: $${price.toFixed(2)}</p>
+                        <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity('${item.productId || item.product_id}', this.value);">
+                        <button onclick="removeItem('${item.productId || item.product_id}');">Remove</button>
+                        
+                    </div>`;
+            });
+
+            totalElement.textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+
+        function goBackToProducts() {
+            window.location.href = "index.html";
+        }
+
+        fetchCart();
+    </script>
+</body>
+</html>

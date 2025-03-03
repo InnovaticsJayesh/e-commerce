@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.idea/
+sklearndb/
+app/app/files/
+app/alembic/versions
+.venv
+env/
+celerybeat-schedule
+sentence-transformers-cache/
+pd_venv

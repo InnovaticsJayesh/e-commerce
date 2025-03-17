@@ -11,6 +11,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .order-container { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        .btn-download { background-color: #007bff; color: white; padding: 10px; border: none; cursor: pointer; margin-top: 10px; }
+        .btn-download:disabled { background-color: #ccc; }
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
 </head>
 <body>
     <header id="header"></header>
@@ -20,7 +35,8 @@
     <section>
         <main>
             <button id="changePasswordBtn">Change Password</button>
-            <div id="passwordForm" style="display: none; margin-top: 10px;">
+
+            <div id="passwordForm" style="display: none; margin-top: 10px; ">
             <input type="password" id="oldPassword" placeholder="Old Password">
             <input type="password" id="newPassword" placeholder="New Password">
             <input type="password" id="confirmPassword" placeholder="Confirm Password">
@@ -28,9 +44,16 @@
             </div>
 
 
-            <div class="container" id="orderContainer">
-                <p>Loading your orders...</p>
+            <!-- <div class="container">
+                <h1>Your Order History</h1>
+                <div id="orderContainer">Loading your orders...</div>
+            </div> -->
+            <h3 style="margin-top: 50px;">Order summary</h3>
+
+            <div id="orderContainer">
+                <p>Loading orders...</p>
             </div>
+
 
             <div class="addresses" id="address-section">
                 <h2>Address</h2>
@@ -56,22 +79,129 @@
 
     const API_BASE_URL = "http://127.0.0.1:8000";
 
+    // function fetchOrders() {
+    //     fetch(`${API_BASE_URL}/order/read/`, {
+    //         method: "GET",
+    //         headers: { "Authorization": `Bearer ${getAuthToken()}` }
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         if (data.success && data.order && Array.isArray(data.order.orders)) {
+    //             renderOrders(data.order.orders);
+    //         } else {
+    //             console.error("Unexpected response structure:", data);
+    //             document.getElementById("orderContainer").innerHTML = "<p>No orders found.</p>";
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error("Error fetching orders:", error);
+    //         document.getElementById("orderContainer").innerHTML = "<p>Error loading orders.</p>";
+    //     });
+    // }
+
+    // function renderOrders(orders) {
+    //     const container = document.getElementById("orderContainer");
+    //     container.innerHTML = orders.map(order => `
+    //         <div class="order-card">
+                // <h3>Order ID: ${order.order_id}</h3>
+                // <p>Total: $${order.total}</p>
+                // <p>Customer: ${order.user.name} (${order.user.email})</p>
+                // <h4>Shipping Address:</h4>
+                // <p>${order.shipping_address.name}, ${order.shipping_address.address}, ${order.shipping_address.city}, ${order.shipping_address.state}, ${order.shipping_address.country} - ${order.shipping_address.pincode}</p>
+                // <h4>Billing Address:</h4>
+                // <p>${order.billing_address.name}, ${order.billing_address.address}, ${order.billing_address.city}, ${order.billing_address.state}, ${order.billing_address.country} - ${order.billing_address.pincode}</p>
+                // <h4>Products:</h4>
+                // <ul>
+                //     ${order.products.map(product => `<li>${product.name} - $${product.price} (x${product.quantity})</li>`).join("")}
+                // </ul>
+    //         </div>
+    //     `).join("");
+    // }
+
+    // updated
+
+    // function fetchOrders() {
+    //     fetch(`${API_BASE_URL}/order/read/`, {
+    //         method: "GET",
+    //         headers: { "Authorization": `Bearer ${getAuthToken()}` }
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         if (data.success && data.orders && Array.isArray(data.orders.orders)) {
+    //             renderOrders(data.orders.orders);  // ✅ Corrected path
+    //         } else {
+    //             console.error("Unexpected response structure:", data);
+    //             document.getElementById("orderContainer").innerHTML = "<p>No orders found.</p>";
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error("Error fetching orders:", error);
+    //         document.getElementById("orderContainer").innerHTML = "<p>Error loading orders.</p>";
+    //     });
+    // }
+
+    // function renderOrders(orders) {
+    //     const container = document.getElementById("orderContainer");
+    //     container.innerHTML = orders.map(order => `
+    //         <div class="order-container" id="order-${order.order_id}">
+    //             <h3>Order ID: ${order.order_id}</h3>
+    //             <p>Total: $${order.total}</p>
+    //             <p>Customer: ${order.user.name} (${order.user.email})</p>
+    //             <h4>Shipping Address:</h4>
+    //             <p>${order.shipping_address.name}, ${order.shipping_address.address}, ${order.shipping_address.city}, ${order.shipping_address.state}, ${order.shipping_address.country} - ${order.shipping_address.pincode}</p>
+    //             <h4>Billing Address:</h4>
+    //             <p>${order.billing_address.name}, ${order.billing_address.address}, ${order.billing_address.city}, ${order.billing_address.state}, ${order.billing_address.country} - ${order.billing_address.pincode}</p>
+    //             <h4>Products:</h4>
+    //             <ul>
+    //                 ${order.products.map(product => `<li>${product.name} - $${product.price} (x${product.quantity})</li>`).join("")}
+    //             </ul>
+    //             <button class="btn btn-primary btn-download" onclick="downloadInvoice(${order.order_id})">Download Invoice</button>
+    //         </div>
+    //     `).join("");
+    // }
+
+    // function downloadInvoice(orderId) {
+    //     const orderElement = document.getElementById(`order-${orderId}`);
+    //     const orderData = {
+    //         order_id: orderId,
+    //         total: orderElement.querySelector("p:nth-child(2)").innerText.split(": ")[1],
+    //         customer: orderElement.querySelector("p:nth-child(3)").innerText.split(": ")[1]
+    //     };
+
+    //     const doc = new window.jspdf.jsPDF();
+
+    //     doc.setFontSize(18);
+    //     doc.text("Invoice", 14, 20);
+
+    //     doc.setFontSize(12);
+    //     doc.text(`Invoice No: ${orderData.order_id}`, 14, 40);
+    //     doc.text(`Total: ${orderData.total}`, 14, 50);
+    //     doc.text(`Customer: ${orderData.customer}`, 14, 60);
+
+    //     doc.save(`Invoice_${orderData.order_id}.pdf`);
+    // }
+
+
     function fetchOrders() {
+        document.getElementById("orderContainer").innerHTML = "<p>Loading orders...</p>";
+
         fetch(`${API_BASE_URL}/order/read/`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${getAuthToken()}` }
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success && data.order && Array.isArray(data.order.orders)) {
-                renderOrders(data.order.orders);
+            if (data.success && data.orders && Array.isArray(data.orders.orders)) {
+                if (data.orders.orders.length === 0) {
+                    document.getElementById("orderContainer").innerHTML = "<p>No orders available.</p>";
+                    return;
+                }
+                renderOrders(data.orders.orders);
             } else {
-                console.error("Unexpected response structure:", data);
                 document.getElementById("orderContainer").innerHTML = "<p>No orders found.</p>";
             }
         })
         .catch(error => {
-            console.error("Error fetching orders:", error);
             document.getElementById("orderContainer").innerHTML = "<p>Error loading orders.</p>";
         });
     }
@@ -79,21 +209,76 @@
     function renderOrders(orders) {
         const container = document.getElementById("orderContainer");
         container.innerHTML = orders.map(order => `
-            <div class="order-card">
+            <div class="order-container" id="order-${order.order_id}">
                 <h3>Order ID: ${order.order_id}</h3>
-                <p>Total: $${order.total}</p>
-                <p>Customer: ${order.user.name} (${order.user.email})</p>
-                <h4>Shipping Address:</h4>
-                <p>${order.shipping_address.name}, ${order.shipping_address.address}, ${order.shipping_address.city}, ${order.shipping_address.state}, ${order.shipping_address.country} - ${order.shipping_address.pincode}</p>
-                <h4>Billing Address:</h4>
-                <p>${order.billing_address.name}, ${order.billing_address.address}, ${order.billing_address.city}, ${order.billing_address.state}, ${order.billing_address.country} - ${order.billing_address.pincode}</p>
-                <h4>Products:</h4>
-                <ul>
-                    ${order.products.map(product => `<li>${product.name} - $${product.price} (x${product.quantity})</li>`).join("")}
-                </ul>
+                <button class="btn btn-success" style="float: right;">PAID</button>
+                <hr>
+                
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 48%;">
+                        <h4>Billing Address</h4>
+                        <p>${order.billing_address.name}<br>
+                        ${order.billing_address.address}, ${order.billing_address.city}, 
+                        ${order.billing_address.state}, ${order.billing_address.country} - ${order.billing_address.pincode}
+                        </p>
+                    </div>
+                    <div style="width: 48%;">
+                        <h4>Shipping Address</h4>
+                        <p>${order.shipping_address.name}<br>
+                        ${order.shipping_address.address}, ${order.shipping_address.city}, 
+                        ${order.shipping_address.state}, ${order.shipping_address.country} - ${order.shipping_address.pincode}
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+                <h4>Order Summary</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border-bottom: 2px solid #000;">No.</th>
+                            <th style="border-bottom: 2px solid #000;">Item</th>
+                            <th style="border-bottom: 2px solid #000;">Quantity</th>
+                            <th style="border-bottom: 2px solid #000;">Price</th>
+                            <th style="border-bottom: 2px solid #000;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${order.products.map((product, index) => `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${product.name}</td>
+                                <td>${product.quantity}</td>
+                                <td>$${product.price}</td>
+                                <td>$${(product.price * product.quantity).toFixed(2)}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+
+                <h3 style="text-align: right; margin-top: 10px;">Total: $${order.total}</h3>
+
+                <button class="btn btn-primary btn-download" onclick="downloadInvoice(${order.order_id})">
+                    Download Invoice
+                </button>
             </div>
         `).join("");
     }
+
+    function downloadInvoice(orderId) {
+        const orderElement = document.getElementById(`order-${orderId}`);
+
+        html2canvas(orderElement, { scale: 2 }).then(canvas => {
+            const imgData = canvas.toDataURL("image/png");
+            const pdf = new jspdf.jsPDF("p", "mm", "a4");
+
+            const imgWidth = 210;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            pdf.addImage(imgData, "PNG", 0, 10, imgWidth, imgHeight);
+            pdf.save(`Invoice_${orderId}.pdf`);
+        });
+    }
+
 
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -168,10 +353,6 @@
                 });
         });
     });
-
-
-    
-
 
     </script>
         

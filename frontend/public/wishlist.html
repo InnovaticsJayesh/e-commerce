@@ -4,139 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Wishlist</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha384-oexTFTtGZP2mDpStX5K2uIfe/Q2c3Nf6Snxjq5m7AsF7uZqJIRfNhYXlWaW7b4yc" crossorigin="anonymous">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9f9f9;
-            padding: 20px;
-            color: #333;
-        }
-
-        h1 {
-            text-align: center;
-            color: #ff4d4d;
-        }
-
-        .wishlist-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        .wishlist-item {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .wishlist-img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .remove-btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            background: #ff4d4d;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .remove-btn:hover {
-            background: #cc0000;
-        }
-
-        .empty-wishlist {
-            text-align: center;
-            font-size: 1.2em;
-            color: #888;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <h1>Your Wishlist</h1>
-    <div class="wishlist-container" id="wishlist-container">
-        <!-- Wishlist products will load here -->
-    </div>
+    <header id="header"></header>
+    <section>
+        <main>
+            <h1>Your Wishlist</h1>
+            <div id="wishlistContainer" class="container"></div>
+        </main>
+    </section>
+    <footer id="footer"></footer>
 
+    <script src="../assets/script/script.js"></script>
     <script>
-        const apiUrl = "http://127.0.0.1:8000/wishlist/allProduct";
-
         function getAuthToken() {
-            const cookie = document.cookie.split('; ').find(row => row.startsWith('authToken='));
-            return cookie ? cookie.split('=')[1] : null;
+            const cookies = document.cookie.split("; ");
+            const tokenCookie = cookies.find(cookie => cookie.startsWith("authToken="));
+            return tokenCookie ? tokenCookie.split("=")[1].trim() : null;
         }
 
-        async function fetchWishlist() {
-            const token = getAuthToken();
-            if (!token) {
-                alert("Please log in to view your wishlist.");
-                return;
-            }
+        const authToken = getAuthToken();
+        if (!authToken) {
+            alert("Please log in to view your wishlist");
+            window.location.href = "/login.html";
+        }
 
-            try {
-                const response = await fetch(apiUrl, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${authToken}`);
 
-                if (!response.ok) throw new Error(`Failed to fetch wishlist. Status: ${response.status}`);
-
-                const wishlist = await response.json();
-                console.log("Wishlist API response:", wishlist);
-                renderWishlist(wishlist.wishlist.data);
-            } catch (error) {
-                console.error("Error fetching wishlist:", error.message);
-            }
+        function fetchWishlist() {
+            fetch("http://127.0.0.1:8000/wishlist/allProduct", {
+                method: "GET",
+                headers: myHeaders
+            })
+            .then(response => response.json())
+            .then(result => renderWishlist(result.wishlist.data))
+            .catch(error => console.error("Error fetching wishlist:", error));
         }
 
         function renderWishlist(products) {
-            const container = document.getElementById("wishlist-container");
-            container.innerHTML = "";
-
-            if (!products || products.length === 0) {
-                container.innerHTML = "<p class='empty-wishlist'>Your wishlist is empty.</p>";
-                return;
-            }
-
-            // Use map to create HTML elements, then join them
-            const wishlistItems = products.map(product => {
-                const imageUrl = product.image_url || 'public/default-placeholder.png';
-                
-                return `
-                    <div class="wishlist-item">
-                        <img 
-                            src="${imageUrl}" 
-                            alt="${product.name || 'Product Image'}" 
-                            class="wishlist-img" 
-                            onerror="this.onerror=null; this.src='public/default-placeholder.png';"
-                        >
-                        <div>
-                            <h3>${product.name || 'Unnamed Product'}</h3>
-                            <p>Price: $${product.price !== undefined ? product.price : 'N/A'}</p>
-                            <button class="remove-btn" onclick="removeFromWishlist(${product.product_id})">Remove</button>
-                        </div>
-                    </div>`;
-            }).join(""); // Join the mapped array to avoid commas
-
-            // Render the final result
-            container.innerHTML = wishlistItems;
+            const container = document.getElementById("wishlistContainer");
+            container.innerHTML = products.map(product => `
+                <div class="product-card" onclick="goToProduct(${product.id})">
+                    <img src="${product.image_url}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>$${product.price}</p>
+                    <button onclick="event.stopPropagation(); removeFromWishlist(${product.id})">Remove</button>
+                </div>
+            `).join('');
         }
 
-        document.addEventListener("DOMContentLoaded", fetchWishlist);
+        function goToProduct(productId) {
+            window.location.href = `http://localhost:5500/frontend/public/product.html?id=${productId}`;
+        }
+
+        function removeFromWishlist(productId) {
+            fetch("http://127.0.0.1:8000/wishlist/delete", {
+                method: "DELETE",
+                headers: myHeaders,
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(response => response.json())
+            .then(() => fetchWishlist())
+            .catch(error => console.error("Error removing product:", error));
+        }
+
+        fetchWishlist();
     </script>
 </body>
 </html>

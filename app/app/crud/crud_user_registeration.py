@@ -52,5 +52,19 @@ class CRUDUserInfo:
     def get_current_valid_user(self, db: Session, sub:EmailStr):
         check_user = db.query(User).filter(User.email == sub).first()
         return check_user
+    
+    def change_password(self, current_user, db: Session, params):
+        user = db.query(User).filter(User.id == current_user.id).first()
+        if not user:
+            return {'success': False, 'message': 'Invalid user ID'}
+        if params.new_password != params.confirm_password:
+            return {'success': False, 'message': 'New password and confirm password do not match'}
+        if not verify_password(params.old_password, user.password):
+            return {'success': False, 'message': 'Current password is incorrect'}
+        user.password = get_password_hash(params.new_password)
+        db.commit()
+        return {'success': True, 'message': 'Password updated successfully'}
+
+
 
 CrudUser = CRUDUserInfo()

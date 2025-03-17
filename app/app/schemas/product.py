@@ -15,3 +15,19 @@ class ProductSchema(BaseModel):
     class Config:
         orm_mode = True 
 
+
+class Pagination(BaseModel):
+    limit: int
+    offset: int
+ 
+
+class Categories(BaseModel):
+    categories: Optional[int] = None
+    limit: int
+    offset: int
+
+
+class SearchParams(BaseModel):
+    search_term: str
+    offset: Optional[int] = 0
+    limit: Optional[int] = 10

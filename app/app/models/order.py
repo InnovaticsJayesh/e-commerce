@@ -13,9 +13,9 @@ from app.models.payment import Payment
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True,index=True) 
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
-    address_id = Column(Integer, ForeignKey(Address.id, ondelete='CASCADE'))
-    billing_address_id = Column(Integer, ForeignKey(Address.id, ondelete='CASCADE'))
+    user_id = Column(Integer, ForeignKey('users.id'))
+    address_id = Column(Integer, ForeignKey(Address.id))
+    billing_address_id = Column(Integer, ForeignKey(Address.id))
     total = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, index=True)

@@ -22,8 +22,10 @@ class CrudPayments:
         payment = Payment(user_id=current_user.id, amount=total_price, is_paid=True)
         db.add(payment)
         db.commit()
-        order = Order(user_id=current_user.id, address_id=params.address_id,
-                      billing_address_id=params.address_id,total=total_price)
+        order = Order(user_id=current_user.id, 
+                      address_id=params.shipping_address_id,   
+                      billing_address_id=params.billing_address_id,
+                      total=total_price)
         db.add(order)   
         db.commit()
         for item in cart_items:

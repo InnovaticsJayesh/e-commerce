@@ -30,3 +30,12 @@ def get_wishlist_api(db: Session = Depends(get_db), current_user: str = Depends(
         return JSONResponse(content={"success": True, "wishlist": wishlist})
     except Exception as e:
         return JSONResponse(status_code=400, content={'success': False, 'message': str(e)})
+
+
+@router.delete('/delete', response_model=schemas.WishlistResponse)
+def delete_wishlist_api(*, db: Session = Depends(get_db), current_user: str = Depends(get_current_user), params: schemas.WishlistDeleteRequest) -> any:
+    try:
+        wishlist = crud.wish_list.delete_wishlist(current_user, db, params)
+        return JSONResponse(content={"success": True, "wishlist": wishlist})
+    except Exception as e:
+        return JSONResponse(status_code=400, content={'success': False, 'message': str(e)})

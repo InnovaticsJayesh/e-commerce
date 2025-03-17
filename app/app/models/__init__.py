@@ -1,5 +1,5 @@
-from .address import City, Country ,State
-from .attribute import AttributeMaster, AttributeValue
+from .location import City, Country ,State
+from .attribute import AttributeMaster, AttributeValue, product_attribute_association
 from .cart import Cart, CartItems
 from .payment import Payment
 from .product import Product, Category

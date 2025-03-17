@@ -16,18 +16,20 @@ class Country(Base):
 
 class State(Base):
     __tablename__ = 'state'
-    id = Column(Integer, primary_key=True,index=True) 
-    name = Column(String)
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, index=True)
 
-    state = relationship('Address')
+    cities = relationship("City", back_populates="state")  
+
 
 class City(Base):
     __tablename__ = 'city'
-    id = Column(Integer, primary_key=True,index=True) 
-    name = Column(String)
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    state_id = Column(Integer, ForeignKey('state.id'))  
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, index=True)
 
-    city = relationship('Address')
+    state = relationship("State", back_populates="cities")  

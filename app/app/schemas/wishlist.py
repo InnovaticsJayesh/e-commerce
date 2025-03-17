@@ -11,7 +11,12 @@ class WishlistToggles(BaseModel):
             raise ValueError(f'isFavourite must be a boolean')
         return v
 
+
 class WishlistResponse(BaseModel):
     success: bool
     message: str
     data: Optional[list]
+
+
+class WishlistDeleteRequest(BaseModel):
+    product_id: int

@@ -74,6 +74,16 @@ class WishLists:
         return {'success': True, 'msg': 'All wishlist products', 'data': all_products}
 
 
+    def delete_wishlist(self, current_user, db: Session, params):
+        if not current_user:
+            return {'success': False, 'msg': 'Unable to find User'}
+        wishlist_entry = db.query(WishList).filter(WishList.user_id == current_user.id, WishList.product_id == params.product_id).first()
+        if not wishlist_entry:
+            return {'success': False, 'msg': 'Product not found in the wishlist'}
+        db.delete(wishlist_entry)
+        db.commit()
+        return {'success': True, 'msg': 'Removed from wishlist successfully'}
+
 
 
 

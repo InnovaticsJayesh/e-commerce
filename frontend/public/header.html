@@ -1,0 +1,75 @@
+<header id="main-header">
+    <nav class="navbar">
+        <div class="logo">
+            <a href="index.html">JD Luxury Watches</a>
+        </div>
+        <div class="nav-links-container">
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="#categories">Categories</a>
+                <a href="#about">About</a>
+            </div>
+            <div class="auth-buttons">
+                    <!-- <button class="icon-btn" id="searchBtn" onclick="toggleSearch()"><i class="fas fa-search"></i></button> -->
+                
+                <button class="icon-btn" onclick="goToWishlist()"><i class="fas fa-heart"></i></button>
+                <button class="icon-btn" onclick="goToCart()"><i class="fas fa-shopping-cart"></i></button>
+                <button id="userButton" class="icon-btn" onclick="goToUserPage()"><i class="fas fa-user"></i></button>
+                <div id="auth-buttons-container">
+                    <button class="login-btn" onclick="redirectToLogin()">Login</button>
+                    <button class="signup-btn" onclick="redirectToSignup()">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Wishlist Sidebar -->
+<div id="wishlistSidebar" class="wishlist-sidebar">
+    <h2>Your Wishlist</h2>
+    <div id="wishlistContainer" class="wishlist-content"></div>
+</div>
+
+<div id="wishlistOverlay" class="wishlist-overlay" onclick="closeWishlist()"></div>
+
+<!-- Link Global JS -->
+<script src="../assets/script/script.js"></script>
+
+<style>
+    .wishlist-sidebar {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        height: 100%;
+        background-color: #fff;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transition: right 0.3s ease;
+        padding: 20px;
+    }
+
+    .wishlist-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+    }
+
+    .wishlist-content img {
+        width: 100px;
+        height: auto;
+        margin-right: 20px;
+    }
+
+    .wishlist-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+</style>

@@ -29,10 +29,10 @@ def get_cart(db: Session = Depends(get_db), current_user: str = Depends(get_curr
     
 
 @router.put("/update-quantity", response_model=schemas.CartResponse)
-def update_cart_quantity(params: schemas.UpdateQuantitySchema, db: Session = Depends(get_db)):
+def update_cart_quantity(*, db: Session = Depends(get_db), params: schemas.UpdateQuantitySchema,):
     try:
-        updated_item = crud.crud_cart.update_cart_quantity(params, db)
-        return JSONResponse(content={"success": True, "updated_cart": updated_item})
+        result = crud.crud_cart.update_cart_quantity(params, db)
+        return JSONResponse(content={"success": True, "updated_cart": result})
     except Exception as e:
         return JSONResponse(status_code=400, content={'success': False, 'message': str(e)})
 

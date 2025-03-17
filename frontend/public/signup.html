@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="../assets/css/login-sign.css">
+</head>
+<body>
+    <div class="wrapper">
+        <h2 class="title">Signup</h2>
+        <form id="signupForm">
+            <div class="field">
+                <p>Name</p>
+                <input type="text" id="signupName" required>
+                <small></small>
+            </div>
+            <div class="field">
+                <p>Email</p>
+                <input type="email" id="signupEmail" required>
+                <small></small>
+            </div>
+            <div class="field">
+                <p>Password</p>
+                <input type="password" id="signupPassword" required>
+                <small></small>
+            </div>
+            <p id="signupResponseMessage" class="text-center"></p>
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+        <p>Already have an account? <a href="login.html">Login</a></p>
+    </div>
+
+    <script src="../assets/script/script.js"></script>
+</body>
+</html>

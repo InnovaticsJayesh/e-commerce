@@ -155,8 +155,7 @@ class CRUDProductsInfo:
                     "is_favourite": row.is_favourite,
                     "attributes": {}
                 }
-            
-            # Collect attributes without overwriting
+
             if row.attribute_name and row.attribute_value:
                 product_map[product_id]["attributes"][row.attribute_name] = row.attribute_value
 

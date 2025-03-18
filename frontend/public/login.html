@@ -30,6 +30,118 @@
         <p>Don't have an account? <a href="signup.html">Sign up</a></p>
     </div>
 
-    <script src="../assets/script/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Attach event listeners
+            document.getElementById("signupForm")?.addEventListener("submit", handleSignup);
+            document.getElementById("loginForm")?.addEventListener("submit", handleLogin);
+        });
+
+        // ✅ Email Validation Function
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // ✅ Password Validation Function
+        function validatePassword(password) {
+            return password.length >= 8 &&
+                /[A-Z]/.test(password) &&
+                /[a-z]/.test(password) &&
+                /\d/.test(password) &&
+                /[@$!%*?&]/.test(password);
+        }
+
+        // ✅ Signup Handler
+        async function handleSignup(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("signupName").value.trim();
+            const email = document.getElementById("signupEmail").value.trim();
+            const password = document.getElementById("signupPassword").value.trim();
+            const responseMessage = document.getElementById("signupResponseMessage");
+
+            // **Validation**
+            if (!validateEmail(email)) {
+                responseMessage.innerHTML = `<div class='alert alert-danger'>Invalid email format.</div>`;
+                return;
+            }
+            if (!validatePassword(password)) {
+                responseMessage.innerHTML = `<div class='alert alert-danger'>Password must be at least 8 characters, include uppercase, lowercase, number, and special character.</div>`;
+                return;
+            }
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/user/register_user", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseMessage.innerHTML = `<div class='alert alert-success'>Signup successful! Redirecting...</div>`;
+                    setTimeout(() => window.location.href = "login.html", 1000);
+                } else {
+                    responseMessage.innerHTML = `<div class='alert alert-danger'>Error: ${data.message || "Signup failed"}</div>`;
+                }
+            } catch (error) {
+                console.error("Signup Error:", error);
+                responseMessage.innerHTML = `<div class='alert alert-danger'>An error occurred. Please try again.</div>`;
+            }
+        }
+
+        // ✅ Login Handler
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("loginEmail").value.trim();
+            const password = document.getElementById("loginPassword").value.trim();
+            const responseMessage = document.getElementById("loginResponseMessage");
+
+            // **Validation**
+            if (!validateEmail(email)) {
+                responseMessage.innerHTML = `<div class='alert alert-danger'>Invalid email format.</div>`;
+                return;
+            }
+            if (!validatePassword(password)) {
+                responseMessage.innerHTML = `<div class='alert alert-danger'>Password must be at least 8 characters, include uppercase, lowercase, number, and special character.</div>`;
+                return;
+            }
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/user/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+                console.log("Login Response:", result); // ✅ Debugging log
+
+                if (response.ok && result.access_token) {
+                    document.cookie = `authToken=${result.access_token}; path=/; max-age=86400; Secure`;
+                    console.log("Stored Token:", getAuthToken()); // ✅ Verify token
+
+                    responseMessage.innerHTML = `<div class='alert alert-success'>Login successful! Redirecting...</div>`;
+                    setTimeout(() => window.location.href = "index.html", 1000);
+                } else {
+                    responseMessage.innerHTML = `<div class='alert alert-danger'>Error: ${result.message || "Invalid credentials"}</div>`;
+                }
+            } catch (error) {
+                console.error("Login Error:", error);
+                responseMessage.innerHTML = `<div class='alert alert-danger'>An error occurred. Please try again.</div>`;
+            }
+        }
+
+        // ✅ Function to Get Auth Token from Cookies
+        function getAuthToken() {
+            const cookies = document.cookie.split("; ");
+            const tokenCookie = cookies.find(cookie => cookie.startsWith("authToken="));
+            return tokenCookie ? tokenCookie.split("=")[1] : null;
+        }
+
+    </script>
+    <!-- <script src="../assets/script/script.js"></script> -->
 </body>
 </html>

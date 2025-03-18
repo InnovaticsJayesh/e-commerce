@@ -815,7 +815,44 @@ button {
 .results-list div:hover { background: #f0f0f0; }
 
 
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
 
+.success-message {
+    color: green;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+
+.options-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.option-box {
+    padding: 8px 15px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    user-select: none; /* Prevent text selection */
+}
+
+.option-box:hover {
+    background-color: #ddd;
+}
+
+.option-box.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
 
 .change-password-container {
     display: none;

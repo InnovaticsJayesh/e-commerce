@@ -59,69 +59,6 @@ function checkAuth() {
     document.getElementById("signupButton")?.addEventListener("click", () => window.location.href = "signup.html");
 }
 
-// ✅ Attach form event listeners once DOM is loaded
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("signupForm")?.addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        const name = document.getElementById("signupName").value;
-        const email = document.getElementById("signupEmail").value;
-        const password = document.getElementById("signupPassword").value;
-
-        try {
-            const response = await fetch("http://127.0.0.1:8000/user/register_user", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                document.getElementById("signupResponseMessage").innerHTML = `<div class='alert alert-success'>Signup successful! Redirecting...</div>`;
-                setTimeout(() => {
-                    window.location.href = "login.html";
-                }, 200);
-            } else {
-                document.getElementById("signupResponseMessage").innerHTML = `<div class='alert alert-danger'>Error: ${data.message || "Signup failed"}</div>`;
-            }
-        } catch (error) {
-            console.error("Signup Error:", error);
-            document.getElementById("signupResponseMessage").innerHTML = `<div class='alert alert-danger'>An error occurred. Please try again.</div>`;
-        }
-    });
-
-    document.getElementById("loginForm")?.addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        const email = document.getElementById("loginEmail").value;
-        const password = document.getElementById("loginPassword").value;
-
-        try {
-            const response = await fetch("http://127.0.0.1:8000/user/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.access_token) {
-                document.cookie = `authToken=${result.access_token}; path=/; max-age=86400;`;
-                document.getElementById("loginResponseMessage").innerHTML = `<div class='alert alert-success'>Login successful! Redirecting...</div>`;
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 200);
-            } else {
-                document.getElementById("loginResponseMessage").innerHTML = `<div class='alert alert-danger'>Error: ${result.message || "Invalid credentials"}</div>`;
-            }
-        } catch (error) {
-            console.error("Login Error:", error);
-            document.getElementById("loginResponseMessage").innerHTML = `<div class='alert alert-danger'>An error occurred. Please try again.</div>`;
-        }
-    });
-});
-
 // Main script to handle categories and products
 document.addEventListener("DOMContentLoaded", function () {
     const categoryGrid = document.querySelector(".category-grid");

@@ -34,7 +34,14 @@ class CrudCart:
         ).first()
 
         if exist_cart_product:
-            return {'success': False, 'msg': 'Product already in cart'}
+            return {
+                'success': False,
+                'msg': 'Product already in cart',
+                'data': {
+                    'product_id': exist_cart_product.product_id  # Optional but useful for redirection
+                }
+            }
+
 
         # Fetch the product
         product = db.query(Product).filter(Product.id == params.product_id).first()
@@ -83,7 +90,7 @@ class CrudCart:
         db.commit()
         db.refresh(db_cart_item)
 
-        return {'success': True, 'msg': 'Added to cart successfully'}
+        return {'success': True, 'msg': 'Added to cart successfully', "data": {"product_id" : db_cart_item.product_id}}
         
 
     def get_cart(self, current_user, db: Session):

@@ -36,19 +36,47 @@ class CRUDProductsInfo:
     
 
     def get_all_products(self, db: Session, params):
+        # Step 1: Main query with LEFT JOINs to get product + attribute data
         main_query = db.query(
             Product.id, Product.name, Product.price, Product.details, Product.image_path,
-            Product.created_at, Product.updated_at, Product.is_favourite, Category.name.label("category"),
+            Product.created_at, Product.updated_at, Product.is_favourite,
+            Category.name.label("category"),
+            AttributeMaster.name.label("attribute_type"),
+            AttributeValue.id.label("attribute_id"),
+            AttributeValue.value.label("attribute_value")
         ).join(
-            Category, Product.categories == Category.id, isouter=True 
+            Category, Product.categories == Category.id, isouter=True
+        ).join(
+            product_attribute_association, Product.id == product_attribute_association.c.product_id, isouter=True
+        ).join(
+            AttributeValue, product_attribute_association.c.attribute_value_id == AttributeValue.id, isouter=True
+        ).join(
+            AttributeMaster, AttributeValue.attribute_id == AttributeMaster.id, isouter=True
         ).order_by(Product.id)
+
         if params.categories:
             main_query = main_query.filter(Product.categories == params.categories)
-        total_count = main_query.count()
-        product_pagination = main_query.offset(params.offset).limit(params.limit).all()
+
+        # Step 2: Get total count before pagination
+        total_count = db.query(Product.id)
+        if params.categories:
+            total_count = total_count.filter(Product.categories == params.categories)
+        total_count = total_count.count()
+
+        # Step 3: Apply pagination
+        if params.limit is not None:
+            main_query = main_query.offset(params.offset).limit(params.limit)
+
+        rows = main_query.all()
+
+        # Step 4: Process rows into product map
         product_map = {}
-        for row in product_pagination:
+        seen_ids = set()
+
+        for row in rows:
             product_id = row.id
+            seen_ids.add(product_id)
+
             if product_id not in product_map:
                 product_map[product_id] = {
                     "id": row.id,
@@ -57,8 +85,48 @@ class CRUDProductsInfo:
                     "category": row.category,
                     "details": row.details,
                     "image_path": row.image_path,
-                    "is_favourite": row.is_favourite
+                    "created_at": row.created_at,
+                    "updated_at": row.updated_at,
+                    "is_favourite": row.is_favourite,
                 }
+
+            if row.attribute_type:
+                if row.attribute_type not in product_map[product_id]:
+                    product_map[product_id][row.attribute_type] = []
+                product_map[product_id][row.attribute_type].append({
+                    "id": row.attribute_id,
+                    "value": row.attribute_value
+                })
+
+        # Step 5: Include products with no attributes (missed in join)
+        if params.limit is not None:
+            fallback_query = db.query(
+                Product.id, Product.name, Product.price, Product.details, Product.image_path,
+                Product.created_at, Product.updated_at, Product.is_favourite,
+                Category.name.label("category")
+            ).join(
+                Category, Product.categories == Category.id, isouter=True
+            ).filter(~Product.id.in_(seen_ids))
+
+            if params.categories:
+                fallback_query = fallback_query.filter(Product.categories == params.categories)
+
+            fallback_query = fallback_query.offset(params.offset).limit(params.limit)
+            missing_products = fallback_query.all()
+
+            for row in missing_products:
+                product_map[row.id] = {
+                    "id": row.id,
+                    "name": row.name,
+                    "price": row.price,
+                    "category": row.category,
+                    "details": row.details,
+                    "image_path": row.image_path,
+                    "created_at": row.created_at,
+                    "updated_at": row.updated_at,
+                    "is_favourite": row.is_favourite,
+                }
+
         return {
             'success': True,
             'msg': 'Products retrieved successfully',
@@ -67,6 +135,7 @@ class CRUDProductsInfo:
                 'total_count': total_count
             }
         }
+
 
 
     def get_product_by_id(self, db: Session, product_id: int):

@@ -16,6 +16,7 @@ class CrudOrder:
         if not current_user:
             return {'success': False, 'msg': 'Unable to find User'}
 
+        # Aliases for joins
         shipping_address = aliased(Address, name="shipping_address")
         billing_address = aliased(Address, name="billing_address")
         shipping_country = aliased(Country, name="shipping_country")
@@ -25,18 +26,39 @@ class CrudOrder:
         billing_state = aliased(State, name="billing_state")
         billing_city = aliased(City, name="billing_city")
 
+        # Main query
         order_read = (
             db.query(
-                Order.id, Order.total, Order.created_at, Order.updated_at,
-                User.name.label("user_name"), User.email.label("user_email"),
-                shipping_address.name.label("shipping_name"), shipping_address.address.label("shipping_address"),
-                shipping_country.name.label("shipping_country"), shipping_state.name.label("shipping_state"), shipping_city.name.label("shipping_city"),
-                shipping_address.landmark.label("shipping_landmark"), shipping_address.pincode.label("shipping_pincode"),
-                billing_address.name.label("billing_name"), billing_address.address.label("billing_address"),
-                billing_country.name.label("billing_country"), billing_state.name.label("billing_state"), billing_city.name.label("billing_city"),
-                billing_address.landmark.label("billing_landmark"), billing_address.pincode.label("billing_pincode"),
-                Product.name.label("product_name"), Product.price.label("product_price"),
-                OrderItem.quantity.label("product_quantity")
+                Order.id,
+                Order.total,
+                Order.created_at,
+                Order.updated_at,
+                User.name.label("user_name"),
+                User.email.label("user_email"),
+
+                # Shipping Address
+                shipping_address.name.label("shipping_name"),
+                shipping_address.address.label("shipping_address"),
+                shipping_country.name.label("shipping_country"),
+                shipping_state.name.label("shipping_state"),
+                shipping_city.name.label("shipping_city"),
+                shipping_address.landmark.label("shipping_landmark"),
+                shipping_address.pincode.label("shipping_pincode"),
+
+                # Billing Address
+                billing_address.name.label("billing_name"),
+                billing_address.address.label("billing_address"),
+                billing_country.name.label("billing_country"),
+                billing_state.name.label("billing_state"),
+                billing_city.name.label("billing_city"),
+                billing_address.landmark.label("billing_landmark"),
+                billing_address.pincode.label("billing_pincode"),
+
+                # Product Info
+                Product.name.label("product_name"),
+                Product.price.label("product_price"),
+                OrderItem.quantity.label("product_quantity"),
+                Product.image_path.label("image")  # ✅ Important: alias this field to match access later
             )
             .join(User, Order.user_id == User.id)
             .join(shipping_address, Order.address_id == shipping_address.id)
@@ -56,13 +78,19 @@ class CrudOrder:
         if not order_read:
             return {'success': False, 'msg': 'No orders found'}
 
+        # Organize orders by ID
         orders = {}
         for order in order_read:
             if order.id not in orders:
                 orders[order.id] = {
                     "order_id": order.id,
                     "total": order.total,
-                    "user": {"name": order.user_name, "email": order.user_email},
+                    "created_at": str(order.created_at),
+                    "updated_at": str(order.updated_at),
+                    "user": {
+                        "name": order.user_name,
+                        "email": order.user_email
+                    },
                     "shipping_address": {
                         "name": order.shipping_name,
                         "address": order.shipping_address,
@@ -87,7 +115,8 @@ class CrudOrder:
             orders[order.id]["products"].append({
                 "name": order.product_name,
                 "price": order.product_price,
-                "quantity": order.product_quantity
+                "quantity": order.product_quantity,
+                "image": order.image  # ✅ Access image using label
             })
 
         return {'success': True, 'orders': list(orders.values())}
@@ -119,7 +148,7 @@ class CrudOrder:
                 billing_address.name.label("billing_name"), billing_address.address.label("billing_address"),
                 billing_country.name.label("billing_country"), billing_state.name.label("billing_state"), billing_city.name.label("billing_city"),
                 billing_address.landmark.label("billing_landmark"), billing_address.pincode.label("billing_pincode"),
-                Product.name.label("product_name"), Product.price.label("product_price"),
+                Product.name.label("product_name"), Product.price.label("product_price"), Product.image_path.label("product_image"),
                 OrderItem.quantity.label("product_quantity")
             )
             .join(User, Order.user_id == User.id)
@@ -136,6 +165,7 @@ class CrudOrder:
             .filter(Order.user_id == current_user.id, Order.id == order_id)
             .first()
         )
+        print("order read:", order_read)
 
         if not order_read:
             return {'success': False, 'msg': 'Order not found'}
@@ -166,9 +196,11 @@ class CrudOrder:
             "products": [{
                 "name": order_read.product_name,
                 "price": order_read.product_price,
+                "image": order_read.product_image,
                 "quantity": order_read.product_quantity
             }]
         }
+        print("order details:", order_details)
 
         return {'success': True, 'order': order_details}
 

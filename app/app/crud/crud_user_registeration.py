@@ -1,11 +1,11 @@
 from datetime import timedelta
-from fastapi import Depends
+from fastapi import Depends, Response
 from sqlalchemy.orm import Session
 from pydantic import EmailStr
 
 from db.session import get_db
 from app.models.user import User
-from app.schemas.user import UserRegisteration
+from app.schemas.user import UserRegisteration, Login
 from app.core.config import settings
 from app.core.security import get_password_hash, verify_password, create_access_token
 
@@ -36,17 +36,26 @@ class CRUDUserInfo:
             'user_id': new_user.id
         }
     
-    def login(self, params: UserRegisteration, db: Session):
+    def login(self, params: Login, db: Session, response: Response):
         user = db.query(User).filter(User.email == params.email).first()
         if not user or not verify_password(params.password, user.password):
             return {'success': False, 'msg': 'Invalid credentials'}
-
+        access_token = create_access_token(
+            params.email,  
+            expires_delta=timedelta(minutes=settings.access_token_expire_minutes)
+        )
+        response.set_cookie(
+            key="authToken",
+            value=access_token,
+            max_age=settings.access_token_expire_minutes * 60,
+            httponly=True,
+            secure=False,  
+            samesite="lax"
+        )
         return {
             'success': True,
             'msg': 'User logged in successfully',
-            'access_token': create_access_token(
-                params.email, expires_delta=timedelta(minutes=settings.access_token_expire_minutes)
-            )
+            'authToken': access_token  
         }
 
     def get_current_valid_user(self, db: Session, sub:EmailStr):
@@ -64,6 +73,7 @@ class CRUDUserInfo:
         user.password = get_password_hash(params.new_password)
         db.commit()
         return {'success': True, 'message': 'Password updated successfully'}
+
 
 
 

@@ -1,6 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
-    loadSection("header.html", "header", checkAuth); // Ensure header loads before checking auth
+    loadSection("header.html", "header", checkAuth);
     loadSection("footer.html", "footer");
+});
+
+function goToCategory(categoryId) {
+    const baseUrl = "http://localhost:5500/frontend/public/category.html";
+    window.location.href = `${baseUrl}?category=${categoryId}`;
+}
+
+// Ensure the script is loaded correctly
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("Script loaded successfully!");
 });
 
 // Function to load header or footer dynamically

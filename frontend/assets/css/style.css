@@ -828,6 +828,20 @@ button {
 }
 
 
+.option-box {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+    background-color: white;
+}
+
+.option-box.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
 .options-container {
     display: flex;
     gap: 10px;
